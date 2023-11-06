@@ -21,7 +21,7 @@ jobs:
         uses: MathieuSoysal/file-updater-for-release@v1.0.3
         with:
           files: README.md # List of files to update
-          prefix: "file-updater-for-release@" # Prefix before the version, default is: ""
+          prefix: "git_practice-" # Prefix before the version, default is: ""
           with-checkout: false # If you don't want to checkout the repo, default is: true
       
       - name: Push changes
