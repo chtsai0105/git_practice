@@ -22,7 +22,7 @@ jobs:
 
       - name: tag version
         id: tag
-        run: echo "$(git tag -l "v*"|tail -n1)
+        run: echo $(git tag -l "v*"|tail -n1)
 
       - name: Substitute
         id: sub
