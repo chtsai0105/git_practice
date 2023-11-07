@@ -18,11 +18,11 @@ jobs:
 
       - name: Check version in README.md
         id: file
-        run: echo "name=version::$(grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ README.md) | sed 's/^git_practice-//g'"
+        run: echo "::set-output name=version::$(cat README.md | grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ | sed 's/^git_practice-//g')"
 
       - name: tag version
         id: tag
-        run: echo "::name=version::$(git tag -l "v*"|tail -n1)"
+        run: echo "::set-output name=version::$(git tag -l "v*"|tail -n1)"
 
       - name: Substitute
         id: sub
