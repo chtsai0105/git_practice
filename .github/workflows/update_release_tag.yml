@@ -18,17 +18,15 @@ jobs:
 
       - name: Check version in README.md
         id: file
-        run: |
-          echo $(grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ README.md) |sed 's/^git_practice-//g' >> "$GITHUB_OUTPUT"
+        run: echo $(grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ README.md) | sed 's/^git_practice-//g'
 
       - name: tag version
         id: tag
-        run: |
-          echo "$(git tag -l "v*"|tail -n1) >> "GITHUB_OUTPUT"
+        run: echo "$(git tag -l "v*"|tail -n1)
 
       - name: Substitute
         id: sub
-        if: steps.file.outputs != steps.tag.outputs
+        if: steps.file.outputs.stdout != steps.tag.outputs.stdout
         run: sed -i 's/git_practice-${{ steps.file.outputs }}/git_practice-${{ steps.tag.outputs }}/g' README.md
 
       - name: Remove tag
@@ -36,7 +34,7 @@ jobs:
         if: steps.sub.conclusion == 'success'
         run: |
           git tag -d ${{ steps.tag.outputs }}
-          git push origin --delete ${{ steps.tag.outputs }}
+          # git push origin --delete ${{ steps.tag.outputs }}
 
       - name: Push changes
         if: steps.remove_tag.conclusion == 'success'
