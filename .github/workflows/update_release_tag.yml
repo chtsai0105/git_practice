@@ -1,33 +1,67 @@
 name: Update files with commit
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - v*.*.*
 
 jobs:
-  publish:
+  check:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }} # You need to create your own token with commit rights
-          ref: master # The branch you want to commit to
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: master
 
+      - name: Check version in README.md
+        id: file
+        run: |
+          echo $(grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ README.md) |sed 's/^git_practice-//g' >> "$GITHUB_OUTPUT"
 
-      - name: Update files
-        uses: MathieuSoysal/file-updater-for-release@v1.0.3
-        with:
-          files: README.md # List of files to update
-          prefix: "git_practice-" # Prefix before the version, default is: ""
-          with-checkout: false # If you don't want to checkout the repo, default is: true
-      
+      - name: tag version
+        id: tag
+        run: |
+          echo "$(git tag -l "v*"|tail -n1) >> "GITHUB_OUTPUT"
+
+      - name: Substitute
+        id: sub
+        if: steps.file.outputs != steps.tag.outputs
+        run: sed -i 's/git_practice-${{ steps.file.outputs }}/git_practice-${{ steps.tag.outputs }}/g' README.md
+
+      - name: Remove tag
+        id: remove_tag
+        if: steps.sub.conclusion == 'success'
+        run: |
+          git tag -d ${{ steps.tag.outputs }}
+          git push origin --delete ${{ steps.tag.outputs }}
+
       - name: Push changes
+        if: steps.remove_tag.conclusion == 'success'
         uses: EndBug/add-and-commit@v9
         with:
           committer_name: GitHub Actions
           committer_email: actions@github.com
           add: .
-          message: 'update files'
+          tag: ${{ steps.tag.outputs }}
+          message: "Update version in file."
+
+  # publish:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #         token: ${{ secrets.GITHUB_TOKEN }} # You need to create your own token with commit rights
+  #         ref: master # The branch you want to commit to
+
+  #     - name: Push changes
+  #       uses: EndBug/add-and-commit@v9
+  #       with:
+  #         committer_name: GitHub Actions
+  #         committer_email: actions@github.com
+  #         add: .
+  #         message: "update files"
