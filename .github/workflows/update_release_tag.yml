@@ -18,23 +18,23 @@ jobs:
 
       - name: Check version in README.md
         id: file
-        run: echo $(grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ README.md) | sed 's/^git_practice-//g'
+        run: echo "name=version::$(grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ README.md) | sed 's/^git_practice-//g'"
 
       - name: tag version
         id: tag
-        run: echo $(git tag -l "v*"|tail -n1)
+        run: echo "name=version::$(git tag -l "v*"|tail -n1)"
 
       - name: Substitute
         id: sub
-        if: steps.file.outputs.stdout != steps.tag.outputs.stdout
-        run: sed -i 's/git_practice-${{ steps.file.outputs }}/git_practice-${{ steps.tag.outputs }}/g' README.md
+        if: steps.file.outputs.version != steps.tag.outputs.version
+        run: sed -i 's/git_practice-${{ steps.file.outputs.version }}/git_practice-${{ steps.tag.outputs.version }}/g' README.md
 
       - name: Remove tag
         id: remove_tag
         if: steps.sub.conclusion == 'success'
         run: |
-          git tag -d ${{ steps.tag.outputs }}
-          # git push origin --delete ${{ steps.tag.outputs }}
+          git tag -d ${{ steps.tag.outputs.version }}
+          # git push origin --delete ${{ steps.tag.outputs.version }}
 
       - name: Push changes
         if: steps.remove_tag.conclusion == 'success'
@@ -43,7 +43,7 @@ jobs:
           committer_name: GitHub Actions
           committer_email: actions@github.com
           add: .
-          tag: ${{ steps.tag.outputs }}
+          tag: ${{ steps.tag.outputs.version }}
           message: "Update version in file."
 
   # publish:
