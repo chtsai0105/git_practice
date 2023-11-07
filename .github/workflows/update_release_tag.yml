@@ -22,11 +22,11 @@ jobs:
 
       - name: tag version
         id: tag
-        run: echo "name=version::$(git tag -l "v*"|tail -n1)"
+        run: echo "::name=version::$(git tag -l "v*"|tail -n1)"
 
       - name: Substitute
         id: sub
-        if: steps.file.outputs.version != steps.tag.outputs.version
+        if: ${{ steps.file.outputs.version }} != ${{ steps.tag.outputs.version }}
         run: sed -i 's/git_practice-${{ steps.file.outputs.version }}/git_practice-${{ steps.tag.outputs.version }}/g' README.md
 
       - name: Remove tag
