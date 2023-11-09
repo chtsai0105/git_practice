@@ -24,15 +24,6 @@ jobs:
         id: tag
         run: echo "version=$(git tag -l "v*"|tail -n1)" >> "$GITHUB_OUTPUT"
 
-      - name: Prune tags from remote
-        if: ${{ steps.file.outputs.version }} != ${{ steps.tag.outputs.version }}
-        uses: EndBug/add-and-commit@v9
-        with:
-          committer_name: GitHub Actions
-          committer_email: actions@github.com
-          tag: "${{ steps.tag.outputs.version }} -d"
-          tag_push: "--prune"
-
       - name: Substitute
         id: sub
         if: ${{ steps.file.outputs.version }} != ${{ steps.tag.outputs.version }}
@@ -44,9 +35,9 @@ jobs:
         with:
           committer_name: GitHub Actions
           committer_email: actions@github.com
-          tag: '${{ steps.tag.outputs.version }} -a -m "Version bump to ${{ steps.tag.outputs.version }}"'
+          tag: '${{ steps.tag.outputs.version }} --annotate -m "Version bump to ${{ steps.tag.outputs.version }}" --force'
           message: "Update version in file."
-          push: "true"
+          tag_push: "--force"
 
   # publish:
   #   runs-on: ubuntu-latest
