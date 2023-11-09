@@ -16,18 +16,20 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: master
 
-      - name: Check version in README.md
+      - name: Capture version in README.md
         id: file
-        run: echo "version=$(cat README.md | grep -Eo $GITHUB_REPOSITORY-v[0-9]+\.[0-9]+\..+ | sed 's/^$GITHUB_REPOSITORY-//g')"  >> "$GITHUB_OUTPUT"
+        run: |
+          repo_name=$(basename $GITHUB_REPOSITORY)
+          echo 'version=$(cat README.md | grep -oP "${repo_name}-v\K\d\.\d\.\d[^\s]+"'  >> "$GITHUB_OUTPUT"
 
-      - name: tag version
+      - name: Capture version in latest tag
         id: tag
         run: echo "version=$(git tag -l "v*"|tail -n1)" >> "$GITHUB_OUTPUT"
 
-      - name: Substitute
+      - name: Substitute version in README.md
         id: sub
         if: ${{ steps.file.outputs.version }} != ${{ steps.tag.outputs.version }}
-        run: sed -i 's/$GITHUB_REPOSITORY-${{ steps.file.outputs.version }}/$GITHUB_REPOSITORY-${{ steps.tag.outputs.version }}/g' README.md
+        run: sed -i 's/$repo_name-${{ steps.file.outputs.version }}/$repo_name-${{ steps.tag.outputs.version }}/g' README.md
 
       - name: Push changes
         if: steps.sub.conclusion == 'success'
