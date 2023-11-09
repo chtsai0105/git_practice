@@ -18,11 +18,11 @@ jobs:
 
       - name: Check version in README.md
         id: file
-        run: echo "version=$(cat README.md | grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ | sed 's/^git_practice-//g')"  >> "GITHUB_OUTPUT"
+        run: echo "version=$(cat README.md | grep -Eo git_practice-v[0-9]+\.[0-9]+\..+ | sed 's/^git_practice-//g')"  >> "$GITHUB_OUTPUT"
 
       - name: tag version
         id: tag
-        run: echo "version=$(git tag -l "v*"|tail -n1)" >> "GITHUB_OUTPUT"
+        run: echo "version=$(git tag -l "v*"|tail -n1)" >> "$GITHUB_OUTPUT"
 
       - name: Prune tags from remote
         if: ${{ steps.file.outputs.version }} != ${{ steps.tag.outputs.version }}
@@ -30,7 +30,6 @@ jobs:
         with:
           committer_name: GitHub Actions
           committer_email: actions@github.com
-          add: .
           tag: "${{ steps.tag.outputs.version }} -d"
           tag_push: "--prune"
 
@@ -45,7 +44,6 @@ jobs:
         with:
           committer_name: GitHub Actions
           committer_email: actions@github.com
-          add: .
           tag: '${{ steps.tag.outputs.version }} -a -m "Version bump to ${{ steps.tag.outputs.version }}"'
           message: "Update version in file."
           push: "true"
