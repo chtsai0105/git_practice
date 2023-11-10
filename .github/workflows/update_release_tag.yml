@@ -20,7 +20,9 @@ jobs:
         id: file
         run: |
           repo_name=$(basename $GITHUB_REPOSITORY)
-          echo 'version=$(cat README.md | grep -oP "${repo_name}-v\K\d\.\d\.\d[^\s]+"'  >> "$GITHUB_OUTPUT"
+          cap=$(cat README.md | grep -oP "${repo_name}-v\K\d\.\d\.\d[^\s]+")
+          echo "version=$cap"  >> "$GITHUB_OUTPUT"
+          echo "repo_name=$repo_name"  >> "$GITHUB_OUTPUT"
 
       - name: Capture version in latest tag
         id: tag
@@ -29,7 +31,7 @@ jobs:
       - name: Substitute version in README.md
         id: sub
         if: ${{ steps.file.outputs.version }} != ${{ steps.tag.outputs.version }}
-        run: sed -i 's/$repo_name-${{ steps.file.outputs.version }}/$repo_name-${{ steps.tag.outputs.version }}/g' README.md
+        run: sed -i 's/${{ steps.file.outputs.repo_name}}-${{ steps.file.outputs.version }}/${{ steps.file.outputs.repo_name}}-${{ steps.tag.outputs.version }}/g' README.md
 
       - name: Push changes
         if: steps.sub.conclusion == 'success'
