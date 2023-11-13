@@ -38,13 +38,13 @@ jobs:
 
       - name: Push changes
         if: steps.sub.conclusion == 'success'
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add README.md
-          git commit -m "Update version in README.md"
-          git tag --annotate -m "Version bump to ${{ steps.tag.outputs.version }}" --force
-          git push --tags --force
+        uses: EndBug/add-and-commit@v9
+        with:
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          tag: '${{ steps.tag.outputs.version }} --annotate -m "Version bump to ${{ steps.tag.outputs.version }}" --force'
+          message: "Update version in file."
+          tag_push: "--force"
 
   publish_release:
     runs-on: ubuntu-latest
