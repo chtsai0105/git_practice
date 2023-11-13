@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - unreleased feature.
 
+## [0.0.3] - 2023-11-13
+
+### Added
+
+- D
+
 ## [0.0.2] - 2023-11-13
 
 ### Fixed
@@ -31,4 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A
 
+[0.0.3]: https://github.com/chtsai0105/git_practice/compare/v0.0.1...v0.0.3
+[0.0.2]: https://github.com/chtsai0105/git_practice/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/chtsai0105/git_practice/releases/tag/v0.0.1
