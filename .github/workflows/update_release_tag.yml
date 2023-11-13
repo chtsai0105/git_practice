@@ -33,7 +33,7 @@ jobs:
 
       - name: Substitute version in README.md
         id: sub
-        if: ${{ steps.file.outputs.version }} != ${{ steps.tag.outputs.version }}
+        if: ${{ steps.file.outputs.version < steps.tag.outputs.version }}
         run: sed -i 's/${{ steps.file.outputs.repo_name}}-${{ steps.file.outputs.version }}/${{ steps.file.outputs.repo_name}}-${{ steps.tag.outputs.version }}/g' README.md
 
       - name: Push changes
