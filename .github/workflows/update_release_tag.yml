@@ -46,7 +46,7 @@ jobs:
           git add README.md
           git commit -m "Update version in README.md"
           git tag --annotate -m "Version bump to ${{ steps.tag.outputs.version }}" --force
-          git push --all --force
+          git push origin ${{ steps.tag.outputs.version }} --force
 
   publish_release:
     runs-on: ubuntu-latest
