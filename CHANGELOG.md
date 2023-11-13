@@ -13,20 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.2] - 2023-11-13
 
-### Added
+### Fixed
 
 - A
 
-### Fixed
+### Changed
 
 - B
 
-### Changed
+### Removed
 
 - C
 
-### Removed
+## [0.0.1] - 2023-08-17
 
-- D
+### Added
+
+- A
 
 [0.0.1]: https://github.com/chtsai0105/git_practice/releases/tag/v0.0.1
