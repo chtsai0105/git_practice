@@ -23,7 +23,7 @@ jobs:
         id: file
         run: |
           repo_name=$(basename "$GITHUB_REPOSITORY")
-          cap=$(grep -oP "${repo_name}-v\K\d\.\d\.\d[^\s]*" README.md)
+          cap=$(grep -oP "${repo_name}-\K\d\.\d\.\d[^\s]*" README.md)
           echo "version=$cap" >> "$GITHUB_OUTPUT"
           echo "repo_name=$repo_name" >> "$GITHUB_OUTPUT"
 
