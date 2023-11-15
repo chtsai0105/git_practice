@@ -45,7 +45,7 @@ jobs:
           git config committer.email actions@github.com
           git add README.md
           git commit -m "Update version in README.md"
-          git tag --annotate ${{ steps.tag.outputs.version }} -m "Version bump to ${{ steps.tag.outputs.version }}" --force
+          git tag --annotate v${{ steps.tag.outputs.version }} -m "Version bump to v${{ steps.tag.outputs.version }}" --force
           git push
           git push --tags --force
 
