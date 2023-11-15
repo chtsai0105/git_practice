@@ -1,3 +1,3 @@
 Test on automatic version bump in README.md
 
-current: git_practice-0.0.3
+current: git_practice-0.0.4
