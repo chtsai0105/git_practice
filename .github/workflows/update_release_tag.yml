@@ -29,7 +29,7 @@ jobs:
 
       - name: Capture version in latest tag
         id: tag
-        run: echo "version=$(${{ github.ref_name }} | sed 's/^v//')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(echo ${{ github.ref_name }} | sed 's/^v//')" >> "$GITHUB_OUTPUT"
 
       - name: Substitute version in README.md
         id: sub
