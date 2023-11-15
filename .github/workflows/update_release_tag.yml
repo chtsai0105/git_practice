@@ -23,13 +23,13 @@ jobs:
         id: file
         run: |
           repo_name=$(basename "$GITHUB_REPOSITORY")
-          cap=$(grep -oP "${repo_name}-\Kv\d\.\d\.\d[^\s]*" README.md)
+          cap=$(grep -oP "${repo_name}-v\K\d\.\d\.\d[^\s]*" README.md)
           echo "version=$cap" >> "$GITHUB_OUTPUT"
           echo "repo_name=$repo_name" >> "$GITHUB_OUTPUT"
 
       - name: Capture version in latest tag
         id: tag
-        run: echo "version=$(git tag -l "v*"|tail -n1)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(${{ github.ref_name }} | sed 's/^v//')" >> "$GITHUB_OUTPUT"
 
       - name: Substitute version in README.md
         id: sub
