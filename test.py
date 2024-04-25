@@ -8,4 +8,7 @@ for fasttree in fasttree_bins:
         print(f"Found FastTree at {fasttree}")
         break
 
-print(fasttree)
+if not fasttree:
+    raise RuntimeError(
+        'FastTree not found. Please install it through "conda install bioconda::fasttree"'
+    )
