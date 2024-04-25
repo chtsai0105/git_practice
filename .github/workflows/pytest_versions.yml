@@ -45,4 +45,4 @@ jobs:
           which FastTree
 
       - name: Run script
-        run: pytest test.py
+        run: python test.py
