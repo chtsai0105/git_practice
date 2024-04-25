@@ -1,0 +1,48 @@
+name: Python versions build test
+
+on:
+  push:
+    branches: ["main", "dev"]
+    paths: ["**.py", "requirements.txt"]
+  pull_request:
+    branches: ["main", "dev"]
+    paths: ["**.py", "requirements.txt"]
+  workflow_dispatch:
+
+jobs:
+  call-build-fasttree:
+    uses: ./.github/workflows/build-fasttree.yml
+
+  test_pythons:
+    name: Test on different python versions
+    runs-on: ubuntu-latest
+    needs:
+      [
+        call-build-fasttree,
+      ]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache FastTree
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/bin/FastTree
+          key: ${{ runner.os }}-FastTree
+
+      - name: Export to PATH and verify
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          which FastTree
+
+      - name: Run script
+        run: pytest test.py
