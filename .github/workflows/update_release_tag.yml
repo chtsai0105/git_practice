@@ -39,6 +39,8 @@ jobs:
         with:
           command: bump
           version: patch
+          keep-unreleased-section: true
+          fail-on-empty-release-notes: true
 
       - name: Get version
         id: query-release-info
