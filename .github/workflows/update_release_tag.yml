@@ -18,7 +18,7 @@ jobs:
           sparse-checkout-cone-mode: false
       
       - name: Fetch tags
-        run: git fetch --tags
+        run: git fetch --tags --force
 
       - name: Get repo name
         id: repo
