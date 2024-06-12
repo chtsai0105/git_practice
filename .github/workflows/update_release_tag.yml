@@ -3,20 +3,49 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: "New tag name"
+      version:
+        description: "Version bump types"
         required: true
+        type: choice
+        default: "patch"
+        options:
+          - major
+          - premajor
+          - minor
+          - preminor
+          - patch
+          - prepatch
+          - prerelease
+      preid:
+        description: "Prerelease identifier"
+        type: string
 
 jobs:
   version_check:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.query-release-info.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
             README.md
+            CHANGELOG.md
           sparse-checkout-cone-mode: false
+
+      - name: Bump changelog version
+        uses: release-flow/keep-a-changelog-action@v2
+        with:
+          command: bump
+          version: patch
+
+      - name: Get version
+        id: query-release-info
+        uses: release-flow/keep-a-changelog-action@v2
+        with:
+          command: query
+          version: latest
 
       - name: Get repo name
         id: repo
@@ -31,9 +60,9 @@ jobs:
           echo "version=$cap" >> "$GITHUB_OUTPUT"
 
       - name: Substitute version in README.md
-        if: $${{ steps.readme.outputs.version }} != ${{ github.event.inputs.tag }}
+        if: $${{ steps.readme.outputs.version }} != ${{ steps.query-release-info.outputs.version }}
         id: sub_readme
-        run: sed -i 's/${{ steps.repo.outputs.repo_name }}-${{ steps.readme.outputs.version }}/${{ steps.repo.outputs.repo_name }}-${{ github.event.inputs.tag }}/g' README.md
+        run: sed -i 's/${{ steps.repo.outputs.repo_name }}-${{ steps.readme.outputs.version }}/${{ steps.repo.outputs.repo_name }}-${{ steps.query-release-info.outputs.version }}/g' README.md
 
       - name: Push with modified tag
         if: steps.sub_readme.conclusion == 'success'
@@ -54,6 +83,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag }}
+          tag_name: ${{ needs.version_check.outputs.version }}
           generate_release_notes: true
           make_latest: true
