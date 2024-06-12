@@ -25,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.query-release-info.outputs.version }}
+      date: ${{ steps.query-release-info.outputs.release-date }}
+      note: ${{ steps.query-release-info.outputs.release-notes }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,7 +41,8 @@ jobs:
         uses: release-flow/keep-a-changelog-action@v2
         with:
           command: bump
-          version: patch
+          version: ${{ github.event.inputs.version}}
+          preid: ${{ github.event.inputs.preid}}
           keep-unreleased-section: true
           fail-on-empty-release-notes: true
 
@@ -89,6 +93,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
+          body: ${{ needs.version_check.outputs.note }}
           tag_name: ${{ needs.version_check.outputs.version }}
-          generate_release_notes: true
+          prerelease: ${{ github.event.inputs.version}} == 'prerelease'
           make_latest: true
