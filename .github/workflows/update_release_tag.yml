@@ -1,4 +1,5 @@
 name: Release
+run-name: Release - ${{ github.event.inputs.version}} version bump ${{ github.event.inputs.preid}}
 
 on:
   workflow_dispatch:
