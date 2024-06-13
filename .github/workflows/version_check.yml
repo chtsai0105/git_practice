@@ -84,4 +84,4 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           event-type: release
-          client-payload: '{"version": "${{ steps.query-release-info.outputs.version }}", "bump_type": "${{ github.event.inputs.version }}", "release-notes": "${{ steps.query-release-info.outputs.release-notes }}"}'
+          client-payload: '{"bump_type": "${{ github.event.inputs.version }}"}'
