@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  repository_dispatch:
+    types: [release]
+
+jobs:
+  publish_release:
+    name: Publish release
+    environment: GitHub releases
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ github.event.client_payload.release-notes }}
+          tag_name: v${{ github.event.client_payload.version }}
+          prerelease: ${{ github.event.client_payload.bump_type == 'prerelease' }}
+          make_latest: ${{ github.event.client_payload.bump_type != 'prerelease' }}
