@@ -51,12 +51,21 @@ jobs:
         id: run-tests
         run: pytest
 
+      - name: Fail on py3.11
+        run: |
+          echo "Running tests on Python ${{ matrix.python-version }}"
+          # Simulate a failure for demonstration purposes
+          if [[ ${{ matrix.python }} == "3.11" ]]; then
+            exit 1
+          fi
+
       - uses: cloudposse/github-action-matrix-outputs-write@v1
         id: out
-        if: steps.run-tests.conclusion == 'success'
         with:
           matrix-step-name: ${{ github.job }}
           matrix-key: ${{ matrix.python }}
+          outputs: |-
+            status: 'success'
 
   conclude:
     runs-on: ubuntu-latest
@@ -66,7 +75,7 @@ jobs:
         id: read
         uses: cloudposse/github-action-matrix-outputs-read@v1
         with:
-          matrix-step-name: run-tests
+          matrix-step-name: out
 
       - name: Set job conclusion
         run: echo ${{ steps.read.outputs.result }}
