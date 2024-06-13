@@ -98,5 +98,5 @@ jobs:
         with:
           body: ${{ needs.version_check.outputs.note }}
           tag_name: v${{ needs.version_check.outputs.version }}
-          prerelease: ${{ github.event.inputs.version}} == 'prerelease'
-          make_latest: true
+          prerelease: ${{ github.event.inputs.version == 'prerelease' }}
+          make_latest: ${{ github.event.inputs.version != 'prerelease' }}
