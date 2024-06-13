@@ -2,4 +2,4 @@
 
 Test on automatic version bump in README.md
 
-current: git_practice-0.0.3
+Latest release(https://github.com/chtsai0105/git_practice/releases/latest)
