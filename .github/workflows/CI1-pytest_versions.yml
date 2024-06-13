@@ -14,31 +14,27 @@ jobs:
     uses: ./.github/workflows/build-fasttree.yml
 
   test_pythons:
-    name: Test on different python versions
+    name: Build and test
     runs-on: ubuntu-latest
-    needs:
-      [
-        call-build-fasttree,
-      ]
+    needs: [call-build-fasttree]
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-  
 
       - name: Cache FastTree
         uses: actions/cache@v4
@@ -52,4 +48,25 @@ jobs:
           which FastTree
 
       - name: Run script
+        id: run-tests
         run: pytest
+
+      - uses: cloudposse/github-action-matrix-outputs-write@v1
+        id: out
+        if: steps.run-tests.conclusion == 'success'
+        with:
+          matrix-step-name: ${{ github.job }}
+          matrix-key: ${{ matrix.python }}
+
+  conclude:
+    runs-on: ubuntu-latest
+    needs: [test_pythons]
+    steps:
+      - name: Read from build and test matrix
+        id: read
+        uses: cloudposse/github-action-matrix-outputs-read@v1
+        with:
+          matrix-step-name: run-tests
+
+      - name: Set job conclusion
+        run: echo ${{ steps.read.outputs.result }}
