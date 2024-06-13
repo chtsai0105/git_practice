@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.1-dev.0] - 2024-06-13
+
 ### Added
 
 - A
+
+[Unreleased]: https://github.com/chtsai0105/git_practice/compare/v0.0.1-dev.0...HEAD
+
+[0.0.1-dev.0]: https://github.com/chtsai0105/git_practice/releases/tag/v0.0.1-dev.0
