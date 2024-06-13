@@ -1,0 +1,69 @@
+name: CI/build and test
+
+on:
+  push:
+    branches: ["main", "dev"]
+    paths: ["**.py", "requirements.txt"]
+  pull_request:
+    branches: ["main", "dev"]
+    paths: ["**.py", "requirements.txt"]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build_fasttree:
+    uses: ./.github/workflows/build-fasttree.yml
+
+  test_pythons:
+    name: Build and test
+    runs-on: ubuntu-latest
+    needs: [build_fasttree]
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install flake8 pytest pytest-cov
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lint
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=30 --max-line-length=130 --statistics --ignore=E203,W503,E402
+
+      - name: Cache FastTree
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.local/bin/FastTree
+          key: ${{ runner.os }}-FastTree
+
+      - name: Export to PATH and verify
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          which FastTree
+
+      - name: Pytest
+        run: |
+          runslow=$(pytest --help| grep -o -- "--runslow")
+          pytest -vv --cov=src --cov-report=xml $runslow
+
+      # - name: Upload coverage reports to Codecov
+      #   uses: codecov/codecov-action@v4.4.1
+      #   with:
+      #     flags: ${{ matrix.python }}
+      #     env_vars: OS
+      #     files: ./coverage.xml
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     verbose: true
