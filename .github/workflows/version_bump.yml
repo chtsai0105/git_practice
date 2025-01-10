@@ -1,6 +1,6 @@
 name: CD/version bump
 run-name: |
-  Version bump - Version bump - ${{ github.event.inputs.bump_type }}
+  Version bump - ${{ github.event.inputs.bump_type }}
   ${{ startsWith(github.event.inputs.bump_type, 'pre') && github.event.inputs.preid || '' }}
 
 on:
