@@ -36,7 +36,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Bump changelog version
-        uses: release-flow/keep-a-changelog-action@v2
+        uses: release-flow/keep-a-changelog-action@v3
         with:
           command: bump
           version: ${{ github.event.inputs.version }}
@@ -46,21 +46,20 @@ jobs:
 
       - name: Get version
         id: query-release-info
-        uses: release-flow/keep-a-changelog-action@v2
+        uses: release-flow/keep-a-changelog-action@v3
         with:
           command: query
           version: latest
 
-      - name: Push with modified tag
+      - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "actions@github.com"
           git add .
-
-      - name: Push with modified tag
-        run: |
           git commit -m "Release v${{ steps.query-release-info.outputs.version }}"
-          git push
+
+      - name: Push changes
+        run: git push
 
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
