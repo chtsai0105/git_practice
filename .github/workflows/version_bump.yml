@@ -1,10 +1,12 @@
 name: CD/version bump
-run-name: Version bump - ${{ github.event.inputs.version }} ${{ github.event.inputs.preid }}
+run-name: |
+  Version bump - Version bump - ${{ github.event.inputs.bump_type }}
+  ${{ startsWith(github.event.inputs.bump_type, 'pre') && github.event.inputs.preid || '' }}
 
 on:
   workflow_dispatch:
     inputs:
-      version:
+      bump_type:
         description: "Version bump types"
         required: true
         type: choice
@@ -38,7 +40,7 @@ jobs:
         uses: release-flow/keep-a-changelog-action@v3
         with:
           command: bump
-          version: ${{ github.event.inputs.version }}
+          version: ${{ github.event.inputs.bump_type }}
           preid: ${{ github.event.inputs.preid }}
           keep-unreleased-section: true
           fail-on-empty-release-notes: true
@@ -62,7 +64,6 @@ jobs:
           event-type: release
           client-payload: >-
             {
-              "bump_type": "${{ github.event.inputs.version }}",
+              "bump_type": "${{ github.event.inputs.bump_type }}",
               "version": "${{ steps.query-release-info.outputs.version }}"
-              "release_notes": "${{ steps.query-release-info.outputs.release-notes }}"
             }

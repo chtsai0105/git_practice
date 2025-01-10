@@ -24,13 +24,20 @@ jobs:
         with:
           path: CHANGELOG.md
           key: version-bump-v${{ github.event.client_payload.version }}
+      
+      - name: Get release info
+        id: query-release-info
+        uses: release-flow/keep-a-changelog-action@v3
+        with:
+          command: query
+          version: latest
 
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Release vv${{ github.event.client_payload.version }}
+          git commit -m "Release v${{ github.event.client_payload.version }}
 
       - name: Push changes
         run: git push
@@ -38,7 +45,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ github.event.client_payload.release_notes }}
+          body: ${{ steps.query-release-info.outputs.release-notes }}
           tag_name: v${{ github.event.client_payload.version }}
           prerelease: ${{ github.event.client_payload.bump_type == 'prerelease' }}
           make_latest: ${{ github.event.client_payload.bump_type != 'prerelease' }}
