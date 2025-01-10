@@ -37,7 +37,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Release v${{ github.event.client_payload.version }}
+          git commit -m "Release v${{ github.event.client_payload.version }}"
 
       - name: Push changes
         run: git push
