@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.1.0] - 2025-07-30
-
 ### Changed
 
 - Also modify the CITAION.cff version and date-released.
@@ -32,8 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A
 
 [Unreleased]: https://github.com/chtsai0105/git_practice/compare/v1.1.0...HEAD
-
-[1.1.0]: https://github.com/chtsai0105/git_practice/compare/v1.1.0-a.0...v1.1.0
 
 [1.1.0-a.0]: https://github.com/chtsai0105/git_practice/compare/v1.0.0...v1.1.0-a.0
 

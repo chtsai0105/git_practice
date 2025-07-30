@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .
+          sparse-checkout-cone-mode: false
 
       - name: Restore cache to CHANGELOG.md and CITATION.cff
         uses: actions/cache/restore@v4
