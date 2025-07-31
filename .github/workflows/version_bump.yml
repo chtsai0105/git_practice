@@ -32,9 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          sparse-checkout: |
-            .
-          sparse-checkout-cone-mode: false
+          sparse-checkout: .
 
       - name: Bump changelog version
         uses: release-flow/keep-a-changelog-action@v3
