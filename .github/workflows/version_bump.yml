@@ -56,7 +56,7 @@ jobs:
           DATE=$(date -u +%Y-%m-%d)
 
           if [ -f CITATION.cff ]; then
-            sed -i 's/^version: .*/version: $VERSION/' CITATION.cff
+            sed -i "s/^version: .*/version: $VERSION/" CITATION.cff
             sed -i "s/^date-released: .*/date-released: '$DATE'/" CITATION.cff
           else
             echo "CITATION.cff not found, skipping update."
